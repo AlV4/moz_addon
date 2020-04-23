@@ -1,7 +1,7 @@
 {
-  "description": "Addon works on spotify.com pages. When detects button play, clicks it, with 1 second interval.",
+  "description": "Addon works pages with music players. When detects button play, clicks it, with 1 second interval.",
   "manifest_version": 2,
-  "name": "Spotify infinite play",
+  "name": "Music non-stop play",
   "version": "1.0",
   "homepage_url": "https://github.com/AlV4/infinite_listening",
   "icons": {
@@ -10,7 +10,7 @@
   "content_scripts": [
     {
       "matches": ["*://*.spotify.com/*"],
-      "js": ["spotify.js"]
+      "js": ["listener.js"]
     }
   ]
 }
