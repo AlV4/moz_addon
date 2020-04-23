@@ -2,7 +2,7 @@
   "description": "Addon works pages with music players. When detects button play, clicks it, with 1 second interval.",
   "manifest_version": 2,
   "name": "Music non-stop play",
-  "version": "1.0",
+  "version": "1.0.1",
   "homepage_url": "https://github.com/AlV4/infinite_listening",
   "icons": {
     "48": "icons/border-48.png"
