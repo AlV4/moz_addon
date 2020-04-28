@@ -9,7 +9,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["*://*.spotify.com/*"],
+      "matches": ["*://*.spotify.com/*", "*://*music.apple.com/*"],
       "js": ["listener.js"]
     }
   ]
