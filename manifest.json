@@ -1,16 +1,24 @@
 {
-  "description": "Addon works pages with music players. When detects button play, clicks it, with 1 second interval.",
+  "description": "Addon works pages with music players. When detects button play, clicks it, with interval defined by user.",
   "manifest_version": 2,
   "name": "Music non-stop play",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "homepage_url": "https://github.com/AlV4/infinite_listening",
   "icons": {
-    "48": "icons/border-48.png"
+    "48": "icons/music-48.png"
   },
-  "content_scripts": [
-    {
-      "matches": ["*://*.spotify.com/*", "*://*music.apple.com/*"],
-      "js": ["listener.js"]
+
+  "permissions": [
+    "activeTab"
+  ],
+
+  "browser_action": {
+    "browser_style": true,
+    "default_popup": "popup/main.html",
+    "default_icon": {
+      "16": "icons/music-16.png",
+      "32": "icons/music-32.png",
+      "48": "icons/music-48.png"
     }
-  ]
+  }
 }
