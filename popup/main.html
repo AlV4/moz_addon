@@ -1,13 +1,56 @@
 <!DOCTYPE html>
-<html lang="en">
+
+<html>
 <head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="main.css"/>
+    <meta charset="utf-8">
+    <link href='https://fonts.googleapis.com/css?family=Nunito:400,300' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="main.css">
 </head>
 <body>
-    <div class="site-choice">developer.mozilla.org</div>
-    <div class="site-choice">support.mozilla.org</div>
-    <div class="site-choice">addons.mozilla.org</div>
+
+    <div class="container">
+
+        <h1>Player Settings</h1>
+
+        <fieldset>
+            <legend>Page</legend>
+            <label for="refresh">Refresh timeout (minutes):</label>
+            <input type="number" id="refresh">
+        </fieldset>
+
+        <fieldset>
+            <legend><span class="number">1</span>Apple Music</legend>
+            <label for="click_period_apple">Click attempt interval (seconds):</label>
+            <input type="number" id="click_period_apple" value="30">
+
+
+            <legend><span class="number">2</span>Spotify</legend>
+            <label for="click_period_spotify">Click attempt interval (seconds):</label>
+            <input type="number" id="click_period_spotify">
+        </fieldset>
+
+        <button id="register">Start</button>
+
+        <fieldset>
+            <button id="code_field" class="grey">Edit code and params</button>
+            <div id="code_area" style="display: none">
+                <label for="code">Source Code:</label>
+                <textarea id="code" rows="10"></textarea>
+                <label for="hosts">Hosts:</label>
+                <input id="hosts">
+                <label for="userScriptID">Script ID:</label>
+                <input id="userScriptID">
+            </div>
+
+            <div id="lastError" style="color: red;">
+            </div>
+            <div id="lastResult" style="color: blue;">
+            </div>
+        </fieldset>
+    </div>
+
     <script src="picker.js"></script>
+
 </body>
+
 </html>
