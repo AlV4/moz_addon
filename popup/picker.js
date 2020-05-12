@@ -13,7 +13,7 @@ const clickPeriodAppleEl =  document.querySelector("#click_period_apple");
 
 const defaultClickPeriod = 30;
 
-const defaultHosts = "*://*music.apple.com/*,*://*spotify.com/*";
+const defaultHosts = "*://music.apple.com/*,*://*.spotify.com/*";
 const defaultCode = loadCode();
 const defaultUserScriptID = "user_script";
 
