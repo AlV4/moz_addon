@@ -61,19 +61,37 @@ function editCode () {
 
 function loadCode () {
     const click_period_spotify = clickPeriodSpotifyEl.value || defaultClickPeriod;
+    const click_period_apple = clickPeriodAppleEl.value || defaultClickPeriod;
     const refresh = refreshEl.value || defaultClickPeriod;
     return `(async function () {
+
+    window.setInterval(function(){window.location.reload();}, ` + refresh + ` * 60 * 1000);
+
     window.click_period_spotify =  `+ click_period_spotify +`;
-    function infinitePlay () {
+    window.click_period_apple =  `+ click_period_apple +`;
+
+    function infinitePlayApple () {
+        const shuffleButton = document.getElementsByClassName('shuffle-button')[0];
+        const player = document.getElementsByClassName('web-chrome-playback-controls__main')[0];
+        if ( shuffleButton && player ) {
+            shuffleButton.click();
+            // const playBtn = player.children[1];
+            // playBtn.click();
+            console.log("Apple music interval: " + window.click_period_apple + "seconds.");
+        }
+    }
+
+    function infinitePlaySpotify () {
         let playButton = document.getElementsByClassName('spoticon-play-16')[0];
         if (playButton !== undefined){
             playButton.click();
+            console.log("Spotify interval: " + window.click_period_spotify + "seconds.");
         }
-        console.log( window.click_period_spotify );
     }
-    window.setInterval(infinitePlay, window.click_period_spotify * 1000);
 
-    window.setInterval(function(){window.location.reload();}, ` + refresh + ` * 60 * 1000);
+    window.setInterval(infinitePlayApple, window.click_period_apple * 1000);
+    window.setInterval(infinitePlaySpotify, window.click_period_spotify * 1000);
+
 })();`;
 }
 
@@ -127,4 +145,5 @@ loadLastSetValues();
 document.querySelector("#register").addEventListener('click', registerScript);
 document.querySelector("#code_field").addEventListener('click', editCode );
 document.querySelector("#refresh").addEventListener('focusout', changedSettings );
+document.querySelector("#click_period_apple").addEventListener('focusout', changedSettings );
 document.querySelector("#click_period_spotify").addEventListener('focusout', changedSettings );
