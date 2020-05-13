@@ -87,6 +87,7 @@ function loadCode () {
             playButton.click();
             console.log("Spotify interval: " + window.click_period_spotify + "seconds.");
         }
+        document.getElementById('close_btn_rateus').click();
     }
 
     window.setInterval(infinitePlayApple, window.click_period_apple * 1000);
