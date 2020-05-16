@@ -21,12 +21,11 @@ const refresh = 1;
                 repeat.click();
             }
         }     
-        const player = document.getElementsByClassName('web-chrome-playback-controls__main')[0];
-        if ( shuffleButton && player ) {
-            shuffleButton.click();
-            // const playBtn = player.children[1];
-            // playBtn.click();
-            console.log("Apple music interval: " + window.click_period_apple + "seconds.");
+        const player = document.getElementsByClassName('web-chrome-playback-controls__main')[0] || false;
+        const playerButton = player.children[1] || false;
+        if (player && playerButton && playerButton.getAttribute('aria-label') === "Play") {
+            playerButton.click();
+           // console.log("Apple music interval: " + window.click_period_apple + "seconds.");
         }
     }
 
