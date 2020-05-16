@@ -145,6 +145,6 @@ loadLastSetValues();
 
 document.querySelector("#register").addEventListener('click', registerScript);
 document.querySelector("#code_field").addEventListener('click', editCode );
-document.querySelector("#refresh").addEventListener('focusout', changedSettings );
-document.querySelector("#click_period_apple").addEventListener('focusout', changedSettings );
-document.querySelector("#click_period_spotify").addEventListener('focusout', changedSettings );
+document.querySelector("#refresh").addEventListener('change', changedSettings );
+document.querySelector("#click_period_apple").addEventListener('change', changedSettings );
+document.querySelector("#click_period_spotify").addEventListener('change', changedSettings );
