@@ -10,7 +10,17 @@ const refresh = 1;
     window.click_period_apple =  click_period_apple;
 
     function infinitePlayApple () {
-        const shuffleButton = document.getElementsByClassName('shuffle-button')[0];
+        const controlButtons = document.getElementsByClassName('web-chrome-playback-controls__directionals')[0] || false;
+        if (controlButtons) {
+            const shuffle = controlButtons.children[0];
+            const repeat = controlButtons.children[2];
+            if (shuffle.getAttribute('aria-checked') === "false") {
+                shuffle.click();
+            }
+            if (repeat.getAttribute('aria-checked') === "false") {
+                repeat.click();
+            }
+        }     
         const player = document.getElementsByClassName('web-chrome-playback-controls__main')[0];
         if ( shuffleButton && player ) {
             shuffleButton.click();
