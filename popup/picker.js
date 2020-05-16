@@ -64,7 +64,6 @@ function loadCode () {
     const click_period_apple = clickPeriodAppleEl.value || defaultClickPeriod;
     const refresh = refreshEl.value || defaultClickPeriod;
     return `(async function () {
-
     window.setInterval(function(){window.location.reload();}, ` + refresh + ` * 60 * 1000);
 
     window.click_period_spotify =  `+ click_period_spotify +`;
@@ -92,7 +91,6 @@ function loadCode () {
 
     window.setInterval(infinitePlayApple, window.click_period_apple * 1000);
     window.setInterval(infinitePlaySpotify, window.click_period_spotify * 1000);
-
 })();`;
 }
 
@@ -139,6 +137,10 @@ async function registerScript() {
         // Store the last error.
         await browser.storage.local.set({lastError});
     }
+
+    browser.tabs.executeScript({
+        code: `window.location.reload();`
+    });
 }
 
 loadLastSetValues();
