@@ -70,13 +70,27 @@ function loadCode () {
     window.click_period_apple =  `+ click_period_apple +`;
 
     function infinitePlayApple () {
-        const shuffleButton = document.getElementsByClassName('shuffle-button')[0];
-        const player = document.getElementsByClassName('web-chrome-playback-controls__main')[0];
-        if ( shuffleButton && player ) {
-            shuffleButton.click();
-            // const playBtn = player.children[1];
-            // playBtn.click();
-            console.log("Apple music interval: " + window.click_period_apple + "seconds.");
+        const bigPlayButton = document.getElementsByClassName('play-button action-button')[0];
+
+        const controlButtons = document.getElementsByClassName('web-chrome-playback-controls__directionals')[0] || false;
+        if (controlButtons) {
+            const shuffle = controlButtons.children[0];
+            const repeat = controlButtons.children[2];
+            if (shuffle.getAttribute('aria-checked') === "false") {
+                shuffle.click();
+            }
+            if (repeat.getAttribute('aria-checked') === "false") {
+                repeat.click();
+            }
+        }     
+        const player = document.getElementsByClassName('web-chrome-playback-controls__main')[0] || false;
+        const playerButton = player.children[1] || false;
+        if (player && playerButton && playerButton.getAttribute('aria-label') === "Play") {
+            playerButton.click();
+            if (playerButton.getAttribute('disabled') === !null) {
+                bigPlayButton.click();
+            }
+           console.log("Apple music interval: " + window.click_period_apple + "seconds.");
         }
     }
 
