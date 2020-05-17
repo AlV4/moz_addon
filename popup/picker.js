@@ -87,10 +87,11 @@ function loadCode () {
         const playerButton = player.children[1] || false;
         if (player && playerButton && playerButton.getAttribute('aria-label') === "Play") {
             playerButton.click();
-            if (playerButton.getAttribute('disabled') === !null) {
-                bigPlayButton.click();
-            }
            console.log("Apple music interval: " + window.click_period_apple + "seconds.");
+        }
+        
+        if (playerButton && playerButton.getAttribute('disabled') === '') {
+            bigPlayButton.click();
         }
     }
 
