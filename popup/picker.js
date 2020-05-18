@@ -64,20 +64,34 @@ function loadCode () {
     const click_period_apple = clickPeriodAppleEl.value || defaultClickPeriod;
     const refresh = refreshEl.value || defaultClickPeriod;
     return `(async function () {
-
     window.setInterval(function(){window.location.reload();}, ` + refresh + ` * 60 * 1000);
 
     window.click_period_spotify =  `+ click_period_spotify +`;
     window.click_period_apple =  `+ click_period_apple +`;
 
     function infinitePlayApple () {
-        const shuffleButton = document.getElementsByClassName('shuffle-button')[0];
-        const player = document.getElementsByClassName('web-chrome-playback-controls__main')[0];
-        if ( shuffleButton && player ) {
-            shuffleButton.click();
-            // const playBtn = player.children[1];
-            // playBtn.click();
-            console.log("Apple music interval: " + window.click_period_apple + "seconds.");
+        const bigPlayButton = document.getElementsByClassName('play-button action-button')[0];
+
+        const controlButtons = document.getElementsByClassName('web-chrome-playback-controls__directionals')[0] || false;
+        if (controlButtons) {
+            const shuffle = controlButtons.children[0];
+            const repeat = controlButtons.children[2];
+            if (shuffle.getAttribute('aria-checked') === "false") {
+                shuffle.click();
+            }
+            if (repeat.getAttribute('aria-checked') === "false") {
+                repeat.click();
+            }
+        }     
+        const player = document.getElementsByClassName('web-chrome-playback-controls__main')[0] || false;
+        const playerButton = player.children[1] || false;
+        if (player && playerButton && playerButton.getAttribute('aria-label') === "Play") {
+            playerButton.click();
+           console.log("Apple music interval: " + window.click_period_apple + "seconds.");
+        }
+        
+        if (playerButton && playerButton.getAttribute('disabled') === '') {
+            bigPlayButton.click();
         }
     }
 
@@ -92,7 +106,6 @@ function loadCode () {
 
     window.setInterval(infinitePlayApple, window.click_period_apple * 1000);
     window.setInterval(infinitePlaySpotify, window.click_period_spotify * 1000);
-
 })();`;
 }
 
@@ -139,12 +152,16 @@ async function registerScript() {
         // Store the last error.
         await browser.storage.local.set({lastError});
     }
+
+    browser.tabs.executeScript({
+        code: `window.location.reload();`
+    });
 }
 
 loadLastSetValues();
 
 document.querySelector("#register").addEventListener('click', registerScript);
 document.querySelector("#code_field").addEventListener('click', editCode );
-document.querySelector("#refresh").addEventListener('focusout', changedSettings );
-document.querySelector("#click_period_apple").addEventListener('focusout', changedSettings );
-document.querySelector("#click_period_spotify").addEventListener('focusout', changedSettings );
+document.querySelector("#refresh").addEventListener('change', changedSettings );
+document.querySelector("#click_period_apple").addEventListener('change', changedSettings );
+document.querySelector("#click_period_spotify").addEventListener('change', changedSettings );
