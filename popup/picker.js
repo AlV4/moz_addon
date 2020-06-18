@@ -77,10 +77,14 @@ function loadCode () {
             const shuffle = controlButtons.children[0];
             const repeat = controlButtons.children[2];
             if (shuffle.getAttribute('aria-checked') === "false") {
-                shuffle.click();
+                setTimeout(function () {
+                    shuffle.click();
+                }, 1000);
             }
             if (repeat.getAttribute('aria-checked') === "false") {
-                repeat.click();
+                setTimeout(function () {
+                    repeat.click();
+                }, 1000);
             }
         }     
         const player = document.getElementsByClassName('web-chrome-playback-controls__main')[0] || false;
