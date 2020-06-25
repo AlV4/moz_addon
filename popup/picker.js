@@ -8,10 +8,17 @@ const lastErrorEl =  document.querySelector("#lastError");
 const lastResultEl =  document.querySelector("#lastResult");
 
 const refreshEl =  document.querySelector("#refresh");
-const clickPeriodSpotifyEl =  document.querySelector("#click_period_spotify");
 const clickPeriodAppleEl =  document.querySelector("#click_period_apple");
+const clickPeriodSpotifyEl =  document.querySelector("#click_period_spotify");
+const clickScatterAppleEl =  document.querySelector("#scatter_apple");
+const clickScatterSpotifyEl =  document.querySelector("#scatter_spotify");
+const clickNextAppleEl =  document.querySelector("#click_next_apple");
+const scatterNextAppleEl =  document.querySelector("#scatter_next_apple");
+const clickNextSpotifyEl =  document.querySelector("#click_next_spotify");
+const scatterNextSpotifyEl =  document.querySelector("#scatter_next_spotify");
 
 const defaultClickPeriod = 30;
+const defaultScatterPeriod = 1;
 
 const defaultHosts = "*://music.apple.com/*,*://*.spotify.com/*";
 const defaultCode = loadCode();
@@ -60,14 +67,27 @@ function editCode () {
 }
 
 function loadCode () {
-    const click_period_spotify = clickPeriodSpotifyEl.value || defaultClickPeriod;
-    const click_period_apple = clickPeriodAppleEl.value || defaultClickPeriod;
+    const click_play_period_apple = clickPeriodAppleEl.value || defaultClickPeriod;
+    const click_play_period_spotify = clickPeriodSpotifyEl.value || defaultClickPeriod;
+
+    const scatter_apple = clickScatterAppleEl.value || defaultScatterPeriod;
+    const scatter_spotify = clickScatterSpotifyEl.value || defaultScatterPeriod;
+    const click_next_apple = clickNextAppleEl.value || defaultClickPeriod;
+    const click_next_spotify = clickNextSpotifyEl.value || defaultClickPeriod;
+    const scatter_next_apple = scatterNextAppleEl.value || defaultScatterPeriod;
+    const scatter_next_spotify = scatterNextSpotifyEl.value || defaultScatterPeriod;
+
     const refresh = refreshEl.value || defaultClickPeriod;
     return `(async function () {
-    window.setInterval(function(){window.location.reload();}, ` + refresh + ` * 60 * 1000);
 
-    window.click_period_spotify =  `+ click_period_spotify +`;
-    window.click_period_apple =  `+ click_period_apple +`;
+    window.click_play_period_spotify =  `+ click_play_period_spotify +`;
+    window.click_play_period_apple =  `+ click_play_period_apple +`;
+    window.scatter_apple =  `+ scatter_apple +`;
+    window.scatter_spotify =  `+ scatter_spotify +`;
+    window.click_next_apple =  `+ click_next_apple +`;
+    window.click_next_spotify =  `+ click_next_spotify +`;
+    window.scatter_next_apple =  `+ scatter_next_apple +`;
+    window.scatter_next_spotify =  `+ scatter_next_spotify +`;
 
     function infinitePlayApple () {
         const bigPlayButton = document.getElementsByClassName('play-button action-button')[0];
@@ -108,8 +128,10 @@ function loadCode () {
         document.getElementById('close_btn_rateus').click();
     }
 
-    window.setInterval(infinitePlayApple, window.click_period_apple * 1000);
-    window.setInterval(infinitePlaySpotify, window.click_period_spotify * 1000);
+    window.setInterval(infinitePlayApple, window.click_play_period_apple * 1000);
+    window.setInterval(infinitePlaySpotify, window.click_play_period_spotify * 1000);
+    
+    window.setInterval(function(){window.location.reload();}, ` + refresh + ` * 60 * 1000);
 })();`;
 }
 

@@ -14,29 +14,49 @@
 
         <fieldset>
             <legend>Page</legend>
-            <label for="refresh">Refresh timeout (minutes):</label>
-            <input type="number" id="refresh">
+            <div class="row">
+                <label for="refresh">Refresh timeout (minutes):</label>
+            </div>
+            <div class="row">
+                <input type="number" id="refresh" value="30">
+            </div>
         </fieldset>
 
         <fieldset>
             <legend><img src="../png/strawberry.png" alt="" class="label-sub"></legend>
             <div class="row">
-                <label for="click_period_apple">Click interval (seconds):</label>
+                <label for="click_period_apple">&#x25B6 interval (seconds):</label>
                 <input type="number" id="click_period_apple" value="30">
             </div>
             <div class="row">
-                <label for="scatter_apple">Scatter:</label>
+                <label for="scatter_apple">&#x25B6 scatter</label>
                 <input type="number" id="scatter_apple" value="0">
+            </div>
+            <div class="row">
+                <label for="click_next_apple">&#x23E9 interval (seconds):</label>
+                <input type="number" id="click_next_apple" value="30">
+            </div>
+            <div class="row">
+                <label for="scatter_next_apple">&#x23E9 scatter</label>
+                <input type="number" id="scatter_next_apple" value="0">
             </div>
 
             <legend><img src="../png/kiwi.png" alt="" style="height: 30px; width: 30px"></legend>
             <div class="row">
-                <label for="click_period_spotify">Click interval (seconds):</label>
+                <label for="click_period_spotify">&#x25B6  interval (seconds):</label>
                 <input type="number" id="click_period_spotify" value="30">
             </div>
             <div class="row">
-                <label for="scatter_spotify">Scatter:</label>
+                <label for="scatter_spotify">&#x25B6 scatter:</label>
                 <input type="number" id="scatter_spotify" value="0">
+            </div>
+            <div class="row">
+                <label for="click_next_spotify">&#x23E9 interval (seconds):</label>
+                <input type="number" id="click_next_spotify" value="30">
+            </div>
+            <div class="row">
+                <label for="scatter_next_spotify">&#x23E9 scatter</label>
+                <input type="number" id="scatter_next_spotify" value="0">
             </div>
 
             <div id="lastError" style="color: red;"></div>
