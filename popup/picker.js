@@ -38,6 +38,12 @@ async function loadLastSetValues() {
         refresh,
         clickPeriodSpotify,
         clickPeriodApple,
+        clickScatterApple,
+        scatterNextApple,
+        clickNextApple,
+        clickScatterSpotify,
+        scatterNextSpotify,
+        clickNextSpotify
     } = params.lastSetValues || {};
 
     hostsInput.value = hosts ? hosts.join(",") : defaultHosts;
@@ -46,6 +52,12 @@ async function loadLastSetValues() {
     refreshEl.value = refresh ? refresh : defaultClickPeriod;
     clickPeriodSpotifyEl.value = clickPeriodSpotify ? clickPeriodSpotify : defaultClickPeriod;
     clickPeriodAppleEl.value = clickPeriodApple ? clickPeriodApple : defaultClickPeriod;
+    clickScatterAppleEl.value = clickScatterApple ? clickScatterApple : defaultScatterPeriod;
+    clickScatterSpotifyEl.value = clickScatterSpotify ? clickScatterSpotify : defaultScatterPeriod;
+    scatterNextAppleEl.value = scatterNextApple ? scatterNextApple : defaultScatterPeriod;
+    scatterNextSpotifyEl.value = scatterNextSpotify ? scatterNextSpotify : defaultScatterPeriod;
+    clickNextAppleEl.value = clickNextApple ? clickNextApple : defaultClickPeriod;
+    clickNextSpotifyEl.value = clickNextSpotify ? clickNextSpotify : defaultClickPeriod;
 
     lastErrorEl.textContent = params.lastError || "";
 }
@@ -66,28 +78,41 @@ function editCode () {
     }
 }
 
+function rand (limit) {
+    return Math.floor(Math.random() * limit);
+}
+
+function seconds (millis) {
+    return millis * 1000;
+}
+
 function loadCode () {
-    const click_play_period_apple = clickPeriodAppleEl.value || defaultClickPeriod;
-    const click_play_period_spotify = clickPeriodSpotifyEl.value || defaultClickPeriod;
-
     const scatter_apple = clickScatterAppleEl.value || defaultScatterPeriod;
-    const scatter_spotify = clickScatterSpotifyEl.value || defaultScatterPeriod;
-    const click_next_apple = clickNextAppleEl.value || defaultClickPeriod;
-    const click_next_spotify = clickNextSpotifyEl.value || defaultClickPeriod;
-    const scatter_next_apple = scatterNextAppleEl.value || defaultScatterPeriod;
-    const scatter_next_spotify = scatterNextSpotifyEl.value || defaultScatterPeriod;
+    let click_play_period_apple = clickPeriodAppleEl.value || defaultClickPeriod;
+    click_play_period_apple = seconds(parseInt(click_play_period_apple) + rand(scatter_apple));
 
-    const refresh = refreshEl.value || defaultClickPeriod;
+    const scatter_spotify = clickScatterSpotifyEl.value || defaultScatterPeriod;
+    let click_play_period_spotify = clickPeriodSpotifyEl.value || defaultClickPeriod;
+    click_play_period_spotify = seconds(parseInt(click_play_period_spotify) + rand(scatter_spotify));
+
+    const scatter_next_apple = scatterNextAppleEl.value || defaultScatterPeriod;
+    let click_next_apple = clickNextAppleEl.value || defaultClickPeriod;
+    click_next_apple = seconds(parseInt(click_next_apple) + rand(scatter_next_apple));
+
+    const scatter_next_spotify = scatterNextSpotifyEl.value || defaultScatterPeriod;
+    let click_next_spotify = clickNextSpotifyEl.value || defaultClickPeriod;
+    click_next_spotify = seconds(parseInt(click_next_spotify) + rand(scatter_next_spotify));
+
+    let refresh = refreshEl.value || defaultClickPeriod;
+    refresh = seconds(refresh);
     return `(async function () {
 
     window.click_play_period_spotify =  `+ click_play_period_spotify +`;
     window.click_play_period_apple =  `+ click_play_period_apple +`;
-    window.scatter_apple =  `+ scatter_apple +`;
-    window.scatter_spotify =  `+ scatter_spotify +`;
     window.click_next_apple =  `+ click_next_apple +`;
     window.click_next_spotify =  `+ click_next_spotify +`;
-    window.scatter_next_apple =  `+ scatter_next_apple +`;
-    window.scatter_next_spotify =  `+ scatter_next_spotify +`;
+    window.refresh =  `+ refresh +`;
+    
 
     function infinitePlayApple () {
         const bigPlayButton = document.getElementsByClassName('play-button action-button')[0];
@@ -106,12 +131,20 @@ function loadCode () {
                     repeat.click();
                 }, 1000);
             }
-        }     
+        }    
+        const playerButtons = document.getElementsByClassName('web-chrome-playback-controls__main')[0] || false;
+        if (playerButtons) {
+            const next = playerButtons.children[2];
+            setTimeout(function () {
+                next.click();
+            }, window.click_next_apple);
+        }
+ 
         const player = document.getElementsByClassName('web-chrome-playback-controls__main')[0] || false;
         const playerButton = player.children[1] || false;
         if (player && playerButton && playerButton.getAttribute('aria-label') === "Play") {
             playerButton.click();
-           console.log("Apple music interval: " + window.click_period_apple + "seconds.");
+           console.log("Apple music interval: " + Math.round(window.click_play_period_apple/1000) + "seconds.");
         }
         
         if (playerButton && playerButton.getAttribute('disabled') === '') {
@@ -123,15 +156,15 @@ function loadCode () {
         let playButton = document.getElementsByClassName('spoticon-play-16')[0];
         if (playButton !== undefined){
             playButton.click();
-            console.log("Spotify interval: " + window.click_period_spotify + "seconds.");
+            console.log("Spotify interval: " + Math.round(window.click_play_period_spotify/1000) + " seconds.");
         }
         document.getElementById('close_btn_rateus').click();
     }
 
-    window.setInterval(infinitePlayApple, window.click_play_period_apple * 1000);
-    window.setInterval(infinitePlaySpotify, window.click_play_period_spotify * 1000);
-    
-    window.setInterval(function(){window.location.reload();}, ` + refresh + ` * 60 * 1000);
+    window.setInterval(infinitePlaySpotify, window.click_play_period_spotify);
+    window.setInterval(infinitePlayApple, window.click_play_period_apple);
+
+    window.setInterval(function(){window.location.reload();}, window.refresh * 60);
 })();`;
 }
 
@@ -144,8 +177,18 @@ async function registerScript() {
         hosts: stringToArray(hostsInput.value),
         code: codeInput.value,
         userScriptID: userScriptID.value,
+
+        clickScatterApple: clickScatterAppleEl.value,
+        clickPeriodApple: clickPeriodAppleEl.value,
+
+        scatterNextApple: scatterNextAppleEl.value,
+        clickNextApple: clickNextAppleEl.value,
+
+        clickScatterSpotify: clickScatterSpotifyEl.value,
         clickPeriodSpotify: clickPeriodSpotifyEl.value,
-        clickPeriodApple: clickPeriodAppleEl.value
+
+        scatterNextSpotify: scatterNextSpotifyEl.value,
+        clickNextSpotify: clickNextSpotifyEl.value
     };
 
     // Store the last submitted values to the extension storage
@@ -191,3 +234,10 @@ document.querySelector("#code_field").addEventListener('click', editCode );
 document.querySelector("#refresh").addEventListener('change', changedSettings );
 document.querySelector("#click_period_apple").addEventListener('change', changedSettings );
 document.querySelector("#click_period_spotify").addEventListener('change', changedSettings );
+
+document.querySelector("#scatter_apple").addEventListener('change', changedSettings );
+document.querySelector("#scatter_spotify").addEventListener('change', changedSettings );
+document.querySelector("#click_next_apple").addEventListener('change', changedSettings );
+document.querySelector("#scatter_next_apple").addEventListener('change', changedSettings );
+document.querySelector("#click_next_spotify").addEventListener('change', changedSettings );
+document.querySelector("#scatter_next_spotify").addEventListener('change', changedSettings );
