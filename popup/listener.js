@@ -1,19 +1,35 @@
-const click_play_period_spotify = 30;
 const click_play_period_apple = 30;
+const scatter_apple = 1;
+const click_play_period_spotify = 30;
+const scatter_spotify = 1;
 const click_next_apple = 30;
+const scatter_next_apple = 30;
 const click_next_spotify = 30;
+const scatter_next_spotify = 30;
 const refresh = 1;
+const scatter_refresh = 1;
 
 (async function () {
 
     window.click_play_period_apple =  click_play_period_apple ;
+    window.scatter_apple =  scatter_apple ;
     window.click_play_period_spotify =  click_play_period_spotify;
+    window.scatter_spotify =  scatter_spotify;
 
     window.click_next_apple =  click_next_apple;
+    window.scatter_next_apple =  scatter_next_apple;
 
     window.click_next_spotify =  click_next_spotify;
+    window.scatter_next_spotify =  scatter_next_spotify;
 
-    function infinitePlayApple () {
+    window.allowReload = false;
+
+    var randomInterval = function (interval, random) {
+        let rand = Math.floor(Math.random() * random);
+        return parseInt(interval) + rand;
+    }
+
+    var infinitePlayApple = function () {
         const bigPlayButton = document.getElementsByClassName('play-button action-button')[0];
 
         const controlButtons = document.getElementsByClassName('web-chrome-playback-controls__directionals')[0] || false;
@@ -31,35 +47,69 @@ const refresh = 1;
                 }, 1000);
             }
         }
+
+        const player = document.getElementsByClassName('web-chrome-playback-controls__main')[0] || false;
+        if (player) {
+            const playerButton = player.children[1] || false;
+        }
+        if (player && playerButton && playerButton.getAttribute('aria-label') === "Play") {
+            playerButton.click();
+        }
+        if (player && playerButton && playerButton.getAttribute('disabled') === '') {
+            bigPlayButton.click();
+        }
+        let rand = randomInterval(click_play_period_apple, scatter_apple);
+        console.log("Apple music interval: " + rand + " seconds.");
+        setTimeout(infinitePlayApple, rand * 1000);
+    }
+    var nextApple = function () {
         const playerButtons = document.getElementsByClassName('web-chrome-playback-controls__main')[0] || false;
         if (playerButtons) {
             const next = playerButtons.children[2];
-            setTimeout(function () {
+            if (next) {
                 next.click();
-            }, window.click_next_apple);
+            }
         }
-
-        const player = document.getElementsByClassName('web-chrome-playback-controls__main')[0] || false;
-        const playerButton = player.children[1] || false;
-        if (player && playerButton && playerButton.getAttribute('aria-label') === "Play") {
-            playerButton.click();
-           console.log("Apple music interval: " + Math.round(window.click_play_period_apple/1000) + "seconds.");
-        }
-        if (playerButton && playerButton.getAttribute('disabled') === '') {
-            bigPlayButton.click();
-        }
+        let rand = randomInterval(click_next_apple, scatter_next_apple);
+        console.log("Apple music next: " + rand + " seconds.");
+        setTimeout(nextApple, rand * 1000);
     }
 
-    function infinitePlaySpotify () {
+    var infinitePlaySpotify = function () {
         let playButton = document.getElementsByClassName('spoticon-play-16')[0];
         if (playButton !== undefined){
             playButton.click();
-            console.log("Spotify interval: " + Math.round(window.click_play_period_spotify/1000) + " seconds.");
         }
+        let rand = randomInterval(click_play_period_spotify, scatter_spotify);
+        console.log("Spotify interval: " + rand + " seconds.");
+        setTimeout(infinitePlaySpotify, rand * 1000);
+    }
+    var nextSpotify = function() {
+        let skipButton = document.getElementsByClassName('spoticon-skip-forward-16')[0];
+        if (skipButton !== undefined) {
+            skipButton.click();
+        }
+        let rand = randomInterval(click_next_spotify, scatter_next_spotify);
+        console.log("Spotify next: " + rand + " seconds.");
+        setTimeout(nextSpotify, rand * 1000);
     }
 
-    window.setInterval(infinitePlaySpotify, window.click_play_period_spotify);
-    window.setInterval(infinitePlayApple, window.click_play_period_apple);
+    var refreshPage = function () {
+        if (allowReload) {
+            location.reload();
+        }
+        window.allowReload = true;
+        let rand = randomInterval(refresh, scatter_refresh);
+        setTimeout(refreshPage, rand * 60);
+        rand = Math.round(rand/1000);
+        console.log("Reload rand: " + rand + " minutes");
+    }
 
-    window.setInterval(function(){window.location.reload();}, refresh * 60);
+    infinitePlayApple();
+    nextApple();
+
+    infinitePlaySpotify();
+    nextSpotify();
+
+    refreshPage();
 })();

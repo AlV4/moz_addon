@@ -8,12 +8,17 @@ const lastErrorEl =  document.querySelector("#lastError");
 const lastResultEl =  document.querySelector("#lastResult");
 
 const refreshEl =  document.querySelector("#refresh");
+const scatterRefreshEl =  document.querySelector("#scatter_refresh");
+
 const clickPeriodAppleEl =  document.querySelector("#click_period_apple");
-const clickPeriodSpotifyEl =  document.querySelector("#click_period_spotify");
 const clickScatterAppleEl =  document.querySelector("#scatter_apple");
-const clickScatterSpotifyEl =  document.querySelector("#scatter_spotify");
+
 const clickNextAppleEl =  document.querySelector("#click_next_apple");
 const scatterNextAppleEl =  document.querySelector("#scatter_next_apple");
+
+const clickPeriodSpotifyEl =  document.querySelector("#click_period_spotify");
+const clickScatterSpotifyEl =  document.querySelector("#scatter_spotify");
+
 const clickNextSpotifyEl =  document.querySelector("#click_next_spotify");
 const scatterNextSpotifyEl =  document.querySelector("#scatter_next_spotify");
 
@@ -36,28 +41,40 @@ async function loadLastSetValues() {
         code,
         userScriptID,
         refresh,
-        clickPeriodSpotify,
+        scatterRefresh,
+
         clickPeriodApple,
         clickScatterApple,
-        scatterNextApple,
+
         clickNextApple,
+        scatterNextApple,
+
+        clickPeriodSpotify,
         clickScatterSpotify,
-        scatterNextSpotify,
-        clickNextSpotify
+
+        clickNextSpotify,
+        scatterNextSpotify
+
     } = params.lastSetValues || {};
 
     hostsInput.value = hosts ? hosts.join(",") : defaultHosts;
     codeInput.value = code ? code : defaultCode;
     userScriptIDInput.value = userScriptID ? userScriptID : defaultUserScriptID;
+
     refreshEl.value = refresh ? refresh : defaultClickPeriod;
-    clickPeriodSpotifyEl.value = clickPeriodSpotify ? clickPeriodSpotify : defaultClickPeriod;
+    scatterRefreshEl.value = scatterRefresh ? scatterRefresh : defaultScatterPeriod;
+
     clickPeriodAppleEl.value = clickPeriodApple ? clickPeriodApple : defaultClickPeriod;
     clickScatterAppleEl.value = clickScatterApple ? clickScatterApple : defaultScatterPeriod;
-    clickScatterSpotifyEl.value = clickScatterSpotify ? clickScatterSpotify : defaultScatterPeriod;
-    scatterNextAppleEl.value = scatterNextApple ? scatterNextApple : defaultScatterPeriod;
-    scatterNextSpotifyEl.value = scatterNextSpotify ? scatterNextSpotify : defaultScatterPeriod;
+
     clickNextAppleEl.value = clickNextApple ? clickNextApple : defaultClickPeriod;
+    scatterNextAppleEl.value = scatterNextApple ? scatterNextApple : defaultScatterPeriod;
+
+    clickPeriodSpotifyEl.value = clickPeriodSpotify ? clickPeriodSpotify : defaultClickPeriod;
+    clickScatterSpotifyEl.value = clickScatterSpotify ? clickScatterSpotify : defaultScatterPeriod;
+
     clickNextSpotifyEl.value = clickNextSpotify ? clickNextSpotify : defaultClickPeriod;
+    scatterNextSpotifyEl.value = scatterNextSpotify ? scatterNextSpotify : defaultScatterPeriod;
 
     lastErrorEl.textContent = params.lastError || "";
 }
@@ -78,10 +95,6 @@ function editCode () {
     }
 }
 
-function rand (limit) {
-    return Math.floor(Math.random() * limit);
-}
-
 function seconds (millis) {
     return millis * 1000;
 }
@@ -89,32 +102,42 @@ function seconds (millis) {
 function loadCode () {
     const scatter_apple = clickScatterAppleEl.value || defaultScatterPeriod;
     let click_play_period_apple = clickPeriodAppleEl.value || defaultClickPeriod;
-    click_play_period_apple = seconds(parseInt(click_play_period_apple) + rand(scatter_apple));
 
     const scatter_spotify = clickScatterSpotifyEl.value || defaultScatterPeriod;
     let click_play_period_spotify = clickPeriodSpotifyEl.value || defaultClickPeriod;
-    click_play_period_spotify = seconds(parseInt(click_play_period_spotify) + rand(scatter_spotify));
 
     const scatter_next_apple = scatterNextAppleEl.value || defaultScatterPeriod;
     let click_next_apple = clickNextAppleEl.value || defaultClickPeriod;
-    click_next_apple = seconds(parseInt(click_next_apple) + rand(scatter_next_apple));
 
     const scatter_next_spotify = scatterNextSpotifyEl.value || defaultScatterPeriod;
     let click_next_spotify = clickNextSpotifyEl.value || defaultClickPeriod;
-    click_next_spotify = seconds(parseInt(click_next_spotify) + rand(scatter_next_spotify));
 
     let refresh = refreshEl.value || defaultClickPeriod;
     refresh = seconds(refresh);
+    let scatter_refresh = scatterRefreshEl.value || defaultScatterPeriod;
+    scatter_refresh = seconds(scatter_refresh);
+
     return `(async function () {
 
-    window.click_play_period_spotify =  `+ click_play_period_spotify +`;
     window.click_play_period_apple =  `+ click_play_period_apple +`;
+    window.scatter_apple =  `+ scatter_apple +`;
+    window.click_play_period_spotify =  `+ click_play_period_spotify +`;
+    window.scatter_spotify =  `+ scatter_spotify +`;
     window.click_next_apple =  `+ click_next_apple +`;
+    window.scatter_next_apple =  `+ scatter_next_apple +`;
     window.click_next_spotify =  `+ click_next_spotify +`;
+    window.scatter_next_spotify =  `+ scatter_next_spotify +`;
     window.refresh =  `+ refresh +`;
-    
+    window.scatter_refresh =  `+ scatter_refresh +`;
 
-    function infinitePlayApple () {
+    window.allowReload = false;
+
+    var randomInterval = function (interval, random) {
+        let rand = Math.floor(Math.random() * random);
+        return parseInt(interval) + rand;
+    }
+
+    var infinitePlayApple = function () {
         const bigPlayButton = document.getElementsByClassName('play-button action-button')[0];
 
         const controlButtons = document.getElementsByClassName('web-chrome-playback-controls__directionals')[0] || false;
@@ -131,40 +154,71 @@ function loadCode () {
                     repeat.click();
                 }, 1000);
             }
-        }    
+        }
+        const player = document.getElementsByClassName('web-chrome-playback-controls__main')[0] || false;
+        if (player) {
+            const playerButton = player.children[1] || false;
+        }
+        if (player && playerButton && playerButton.getAttribute('aria-label') === "Play") {
+            playerButton.click();
+        }
+        if (player && playerButton && playerButton.getAttribute('disabled') === '') {
+            bigPlayButton.click();
+        }
+        let rand = randomInterval(click_play_period_apple, scatter_apple);
+        console.log("Apple music interval: " + rand + " seconds.");
+        setTimeout(infinitePlayApple, rand * 1000);
+    }
+    var nextApple = function () {
         const playerButtons = document.getElementsByClassName('web-chrome-playback-controls__main')[0] || false;
         if (playerButtons) {
             const next = playerButtons.children[2];
-            setTimeout(function () {
+            if (next) {
                 next.click();
-            }, window.click_next_apple);
+            }
         }
- 
-        const player = document.getElementsByClassName('web-chrome-playback-controls__main')[0] || false;
-        const playerButton = player.children[1] || false;
-        if (player && playerButton && playerButton.getAttribute('aria-label') === "Play") {
-            playerButton.click();
-           console.log("Apple music interval: " + Math.round(window.click_play_period_apple/1000) + "seconds.");
-        }
-        
-        if (playerButton && playerButton.getAttribute('disabled') === '') {
-            bigPlayButton.click();
-        }
+        let rand = randomInterval(click_next_apple, scatter_next_apple);
+        console.log("Apple music next: " + rand + " seconds.");
+        setTimeout(nextApple, rand * 1000);
     }
 
-    function infinitePlaySpotify () {
+    var infinitePlaySpotify = function () {
         let playButton = document.getElementsByClassName('spoticon-play-16')[0];
         if (playButton !== undefined){
             playButton.click();
-            console.log("Spotify interval: " + Math.round(window.click_play_period_spotify/1000) + " seconds.");
         }
-        document.getElementById('close_btn_rateus').click();
+        let rand = randomInterval(click_play_period_spotify, scatter_spotify);
+        console.log("Spotify interval: " + rand + " seconds.");
+        setTimeout(infinitePlaySpotify, rand * 1000);
+    }
+    var nextSpotify = function() {
+        let skipButton = document.getElementsByClassName('spoticon-skip-forward-16')[0];
+        if (skipButton !== undefined) {
+            skipButton.click();
+        }
+        let rand = randomInterval(click_next_spotify, scatter_next_spotify);
+        console.log("Spotify next: " + rand + " seconds.");
+        setTimeout(nextSpotify, rand * 1000);
     }
 
-    window.setInterval(infinitePlaySpotify, window.click_play_period_spotify);
-    window.setInterval(infinitePlayApple, window.click_play_period_apple);
+    var refreshPage = function () {
+        if (allowReload) {
+            location.reload();
+        }
+        window.allowReload = true;
+        let rand = randomInterval(refresh, scatter_refresh);
+        setTimeout(refreshPage, rand * 60);
+        rand = Math.round(rand/1000);
+        console.log("Reload rand: " + rand + " minutes");
+    }
 
-    window.setInterval(function(){window.location.reload();}, window.refresh * 60);
+    infinitePlayApple();
+    nextApple();
+
+    infinitePlaySpotify();
+    nextSpotify();
+
+    refreshPage();
 })();`;
 }
 
@@ -178,17 +232,20 @@ async function registerScript() {
         code: codeInput.value,
         userScriptID: userScriptID.value,
 
-        clickScatterApple: clickScatterAppleEl.value,
+        refresh: refreshEl.value,
+        scatterRefresh: scatterRefreshEl.value,
+
         clickPeriodApple: clickPeriodAppleEl.value,
+        clickScatterApple: clickScatterAppleEl.value,
 
-        scatterNextApple: scatterNextAppleEl.value,
         clickNextApple: clickNextAppleEl.value,
+        scatterNextApple: scatterNextAppleEl.value,
 
-        clickScatterSpotify: clickScatterSpotifyEl.value,
         clickPeriodSpotify: clickPeriodSpotifyEl.value,
+        clickScatterSpotify: clickScatterSpotifyEl.value,
 
-        scatterNextSpotify: scatterNextSpotifyEl.value,
-        clickNextSpotify: clickNextSpotifyEl.value
+        clickNextSpotify: clickNextSpotifyEl.value,
+        scatterNextSpotify: scatterNextSpotifyEl.value
     };
 
     // Store the last submitted values to the extension storage
@@ -231,13 +288,18 @@ loadLastSetValues();
 
 document.querySelector("#register").addEventListener('click', registerScript);
 document.querySelector("#code_field").addEventListener('click', editCode );
-document.querySelector("#refresh").addEventListener('change', changedSettings );
-document.querySelector("#click_period_apple").addEventListener('change', changedSettings );
-document.querySelector("#click_period_spotify").addEventListener('change', changedSettings );
 
+document.querySelector("#refresh").addEventListener('change', changedSettings );
+document.querySelector("#scatter_refresh").addEventListener('change', changedSettings );
+
+document.querySelector("#click_period_apple").addEventListener('change', changedSettings );
 document.querySelector("#scatter_apple").addEventListener('change', changedSettings );
-document.querySelector("#scatter_spotify").addEventListener('change', changedSettings );
+
 document.querySelector("#click_next_apple").addEventListener('change', changedSettings );
 document.querySelector("#scatter_next_apple").addEventListener('change', changedSettings );
+
+document.querySelector("#click_period_spotify").addEventListener('change', changedSettings );
+document.querySelector("#scatter_spotify").addEventListener('change', changedSettings );
+
 document.querySelector("#click_next_spotify").addEventListener('change', changedSettings );
 document.querySelector("#scatter_next_spotify").addEventListener('change', changedSettings );
