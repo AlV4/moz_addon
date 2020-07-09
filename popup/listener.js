@@ -80,6 +80,12 @@ const scatter_refresh = 1;
         }
 
         var infinitePlaySpotify = function () {
+            // Click on big green play button, it exists when album doesn't started yet
+            for (let item of document.getElementsByTagName('button')) {
+                if (56 === item.scrollWidth && "Play" === item.title){
+                    item.click();
+                }
+            }
             let playButton = document.getElementsByClassName('spoticon-play-16')[0];
             if (playButton !== undefined) {
                 playButton.click();
