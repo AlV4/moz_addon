@@ -137,89 +137,96 @@ function loadCode () {
         return parseInt(interval) + rand;
     }
 
-    var infinitePlayApple = function () {
-        const bigPlayButton = document.getElementsByClassName('play-button action-button')[0];
+    try {
 
-        const controlButtons = document.getElementsByClassName('web-chrome-playback-controls__directionals')[0] || false;
-        if (controlButtons) {
-            const shuffle = controlButtons.children[0];
-            const repeat = controlButtons.children[2];
-            if (shuffle.getAttribute('aria-checked') === "false") {
-                setTimeout(function () {
-                    shuffle.click();
-                }, 1000);
+        var infinitePlayApple = function () {
+
+            const controlButtons = document.getElementsByClassName('web-chrome-playback-controls__directionals')[0] || false;
+            if (controlButtons) {
+                const shuffle = controlButtons.children[0];
+                const repeat = controlButtons.children[2];
+                if (shuffle.getAttribute('aria-checked') === "false") {
+                    setTimeout(function () {
+                        shuffle.click();
+                    }, 1000);
+                }
+                if (repeat.getAttribute('aria-checked') === "false") {
+                    setTimeout(function () {
+                        repeat.click();
+                    }, 1000);
+                }
             }
-            if (repeat.getAttribute('aria-checked') === "false") {
-                setTimeout(function () {
-                    repeat.click();
-                }, 1000);
+
+            const player = document.getElementsByClassName('web-chrome-playback-controls__main')[0] || false;
+            let playerButton = false;
+            try {
+                playerButton = player.children[1];
+            } catch (e) {
             }
-        }
-        const player = document.getElementsByClassName('web-chrome-playback-controls__main')[0] || false;
-        if (player) {
-            const playerButton = player.children[1] || false;
-        }
-        if (player && playerButton && playerButton.getAttribute('aria-label') === "Play") {
-            playerButton.click();
-        }
-        if (player && playerButton && playerButton.getAttribute('disabled') === '') {
-            bigPlayButton.click();
-        }
-        let rand = randomInterval(click_play_period_apple, scatter_apple);
-        console.log("Apple music interval: " + rand + " seconds.");
-        setTimeout(infinitePlayApple, rand * 1000);
-    }
-    var nextApple = function () {
-        const playerButtons = document.getElementsByClassName('web-chrome-playback-controls__main')[0] || false;
-        if (playerButtons) {
-            const next = playerButtons.children[2];
-            if (next) {
-                next.click();
+            if (player && playerButton && playerButton.getAttribute('aria-label') === "Play") {
+                playerButton.click();
             }
+            if (player && playerButton && playerButton.getAttribute('disabled') === '') {
+                const bigPlayButton = document.getElementsByClassName('play-button action-button')[0];
+                bigPlayButton.click();
+            }
+            let rand = randomInterval(click_play_period_apple, scatter_apple);
+            console.log("Apple music interval: " + rand + " seconds.");
+            setTimeout(infinitePlayApple, rand * 1000);
         }
-        let rand = randomInterval(click_next_apple, scatter_next_apple);
-        console.log("Apple music next: " + rand + " seconds.");
-        setTimeout(nextApple, rand * 1000);
-    }
-
-    var infinitePlaySpotify = function () {
-        let playButton = document.getElementsByClassName('spoticon-play-16')[0];
-        if (playButton !== undefined){
-            playButton.click();
+        var nextApple = function () {
+            const playerButtons = document.getElementsByClassName('web-chrome-playback-controls__main')[0] || false;
+            if (playerButtons) {
+                const next = playerButtons.children[2];
+                if (next) {
+                    next.click();
+                }
+            }
+            let rand = randomInterval(click_next_apple, scatter_next_apple);
+            console.log("Apple music next: " + rand + " seconds.");
+            setTimeout(nextApple, rand * 1000);
         }
-        let rand = randomInterval(click_play_period_spotify, scatter_spotify);
-        console.log("Spotify interval: " + rand + " seconds.");
-        setTimeout(infinitePlaySpotify, rand * 1000);
-    }
-    var nextSpotify = function() {
-        let skipButton = document.getElementsByClassName('spoticon-skip-forward-16')[0];
-        if (skipButton !== undefined) {
-            skipButton.click();
+
+        var infinitePlaySpotify = function () {
+            let playButton = document.getElementsByClassName('spoticon-play-16')[0];
+            if (playButton !== undefined) {
+                playButton.click();
+            }
+            let rand = randomInterval(click_play_period_spotify, scatter_spotify);
+            console.log("Spotify interval: " + rand + " seconds.");
+            setTimeout(infinitePlaySpotify, rand * 1000);
         }
-        let rand = randomInterval(click_next_spotify, scatter_next_spotify);
-        console.log("Spotify next: " + rand + " seconds.");
-        setTimeout(nextSpotify, rand * 1000);
-    }
-
-    var refreshPage = function () {
-        if (allowReload) {
-            location.reload();
+        var nextSpotify = function () {
+            let skipButton = document.getElementsByClassName('spoticon-skip-forward-16')[0];
+            if (skipButton !== undefined) {
+                skipButton.click();
+            }
+            let rand = randomInterval(click_next_spotify, scatter_next_spotify);
+            console.log("Spotify next: " + rand + " seconds.");
+            setTimeout(nextSpotify, rand * 1000);
         }
-        window.allowReload = true;
-        let rand = randomInterval(refresh, scatter_refresh);
-        setTimeout(refreshPage, rand * 60);
-        rand = Math.round(rand/1000);
-        console.log("Reload rand: " + rand + " minutes");
-    }
 
-    infinitePlayApple();
-    nextApple();
+        var refreshPage = function () {
+            if (allowReload) {
+                location.reload();
+            }
+            window.allowReload = true;
+            let rand = randomInterval(refresh, scatter_refresh);
+            setTimeout(refreshPage, rand * 60);
+            rand = Math.round(rand / 1000);
+            console.log("Reload rand: " + rand + " minutes");
+        }
 
-    infinitePlaySpotify();
-    nextSpotify();
+        infinitePlayApple();
+        nextApple();
 
-    refreshPage();
-})();`;
+        infinitePlaySpotify();
+        nextSpotify();
+
+        refreshPage();
+    } catch (e) {
+        console.log(e);
+    }})();`;
 }
 
 function changedSettings() {
