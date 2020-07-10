@@ -9,7 +9,7 @@ const scatter_next_spotify = 30;
 const refresh = 1;
 const scatter_refresh = 1;
 
-(async function () {
+(function () {
 
     window.click_play_period_apple =  click_play_period_apple ;
     window.scatter_apple =  scatter_apple ;
@@ -115,11 +115,15 @@ const scatter_refresh = 1;
             console.log("Reload rand: " + rand + " minutes");
         }
 
-        infinitePlayApple();
-        nextApple();
+        if (location.href.indexOf('apple.com') !== -1) {
+            infinitePlayApple();
+            nextApple();
+        }
 
-        infinitePlaySpotify();
-        nextSpotify();
+        if (location.href.indexOf('spotify.com') !== -1) {
+            infinitePlaySpotify();
+            nextSpotify();
+        }
 
         refreshPage();
     } catch (e) {

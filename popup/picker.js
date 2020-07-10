@@ -117,7 +117,7 @@ function loadCode () {
     let scatter_refresh = scatterRefreshEl.value || defaultScatterPeriod;
     scatter_refresh = seconds(scatter_refresh);
 
-    return `(async function () {
+    return `(function () {
 
     window.click_play_period_apple =  `+ click_play_period_apple +`;
     window.scatter_apple =  `+ scatter_apple +`;
@@ -223,11 +223,15 @@ function loadCode () {
             console.log("Reload rand: " + rand + " minutes");
         }
 
-        infinitePlayApple();
-        nextApple();
+        if (location.href.indexOf('apple.com') !== -1) {
+            infinitePlayApple();
+            nextApple();
+        }
 
-        infinitePlaySpotify();
-        nextSpotify();
+        if (location.href.indexOf('spotify.com') !== -1) {
+            infinitePlaySpotify();
+            nextSpotify();
+        }
 
         refreshPage();
     } catch (e) {
