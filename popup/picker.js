@@ -193,6 +193,12 @@ function loadCode () {
                 if (56 === item.scrollWidth && "Play" === item.title){
                     item.click();
                 }
+                if ("Enable shuffle" === item.title) {
+                    item.click();
+                }
+                if ("Enable repeat" === item.title) {
+                    item.click();
+                }
             }
             let playButton = document.getElementsByClassName('spoticon-play-16')[0];
             if (playButton !== undefined) {
